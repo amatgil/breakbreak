@@ -21,18 +21,25 @@ StartBlocks ← [{Catppuccin~Green ℂ100 20 ℂ10 10}
                {Catppuccin~Yellow ℂ100 20 ℂ120 10}
                {Catppuccin~Rosewater ℂ100 20 ℂ300 10}
                {Catppuccin~Lavander ℂ100 20 ℂ500 10}]
+StartState ← |0.3 StartPaddlePos StartBall StartBlocks 10 100 ÷₂PaddleH 10
 
-DrawPaddle ← I~Draw~Rect Catppuccin~Sapphire ℂPaddleW PaddleH # ? PaddlePos
-DrawBlocks ← ≡(I~Draw~Rect °{⊙⊙⊙})                            # ? Blocks
-DrawBall   ← I~Draw~Rect Catppuccin~Text ℂBallW BallH ⊣       # ? Ball
+DrawPaddle            ← I~Draw~Rect Catppuccin~Sapphire ℂPaddleW PaddleH       # ? PaddlePos
+DrawBlocks            ← ≡(I~Draw~Rect °{⊙⊙⊙})                                  # ? Blocks
+DrawBall              ← I~Draw~Rect Catppuccin~Text ℂBallW BallH ⊣             # ? Ball
+IsBallOutOfXBounds    ← ∨⊃(≤0|≥W) ⊙◌°ℂ ⊣                                       # ? Ball
+IsBallOutOfYBounds    ← ≤0 ◌°ℂ ⊣                                               # ? Ball
+IsPaddleBallCollision ← I~Collide~Rects ⊓(˜⊂ℂPaddleW PaddleH|˜⊂ℂ BallW BallH⊣) # ? PaddlePos Ball
 
 # Main
 I~Open [W H] "Breakbreak"
 
 # Stack: PaddlePos Ball Blocks
-StartPaddlePos StartBall StartBlocks 10 100 ÷₂PaddleH 10
+
+StartState
 I~Loop!(
   I~Draw~Background Catppuccin~Base
+  # Reset
+  ⍥(⋅⋅⋅StartState) Key~Down @R
 
   # Inputs
   ↥ ℂ0 0 ⍥(-×MoveRate i) Key~Down Key~Arrow @<            # Move left, adjust bounds
@@ -41,13 +48,9 @@ I~Loop!(
   # Step physics
   ⊙(⍜⊣(↧ℂW H ↥ℂ0 0) \+)
 
-  # Flip ball y-vel if colliding with paddle or roof/floor
-  ⍥⊙(⍜⊢⍜°ℂ⊙¯) ◡(
-    ⊃(I~Collide~Rects ⊓(˜⊂ℂPaddleW PaddleH|˜⊂ℂ BallW BallH⊣)|∨⊃(≤0|≥H) ⊣◌°ℂ◌)
-    ∨)
-
-  # Flip ball x-vel if out of vertical bounds
-  ⍥⊙(⍜⊢⍜°ℂ¯) ◡⋅(∨⊃(≤0|≥W) ⊙◌°ℂ ⊣)
+  # Bounds dealing (not through bottom)
+  ⍥⊙(⍜⊢⍜°ℂ⊙¯) ◡(∨⊃(IsPaddleBallCollision|⋅IsBallOutOfYBounds))
+  ⍥⊙(⍜⊢⍜°ℂ¯) ◡⋅IsBallOutOfXBounds
 
   # Draw
   ◡⊓(DrawPaddle|DrawBall|DrawBlocks)
