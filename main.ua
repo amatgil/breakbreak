@@ -21,7 +21,7 @@ StartBlocks ← [{Catppuccin~Green ℂ100 20 ℂ10 10}
                {Catppuccin~Yellow ℂ100 20 ℂ120 10}
                {Catppuccin~Rosewater ℂ100 20 ℂ300 10}
                {Catppuccin~Lavander ℂ100 20 ℂ500 10}]
-StartState ← |0.3 StartPaddlePos StartBall StartBlocks 10 100 ÷₂PaddleH 10
+StartState ← |0.3 StartPaddlePos StartBall StartBlocks # 10 100 ÷₂PaddleH 10
 
 DrawPaddle            ← I~Draw~Rect Catppuccin~Sapphire ℂPaddleW PaddleH       # ? PaddlePos
 DrawBlocks            ← ≡(I~Draw~Rect °{⊙⊙⊙})                                  # ? Blocks
@@ -33,9 +33,7 @@ IsPaddleBallCollision ← I~Collide~Rects ⊓(˜⊂ℂPaddleW PaddleH|˜⊂ℂ B
 # Main
 I~Open [W H] "Breakbreak"
 
-# Stack: PaddlePos Ball Blocks
-
-StartState
+StartState # Stack <- PaddlePos Ball Blocks
 I~Loop!(
   I~Draw~Background Catppuccin~Base
   # Reset
@@ -51,6 +49,17 @@ I~Loop!(
   # Bounds dealing (not through bottom)
   ⍥⊙(⍜⊢⍜°ℂ⊙¯) ◡(∨⊃(IsPaddleBallCollision|⋅IsBallOutOfYBounds))
   ⍥⊙(⍜⊢⍜°ℂ¯) ◡⋅IsBallOutOfXBounds
+
+  # Blocks
+  ⊙(⊙⊙[] # Ball Blocks Acc
+    ⍜:∧(
+      # Stack <- Block Ball CheckedBlocks
+      ◡(I~Collide~Rects ⊓(≡°□↙₋₂|⊂ ℂBallH BallW ⊣)) # Collision?
+      ⨬(⊃(⋅⊙⋅|˜⊂⊙⋅⊙)                                # No collision, leave as checked
+      | ⊸(⊓⊡₂⊣)                                     # Collision, find direction; don't re-add block
+        ⨬(⍜⊢⍜°ℂ⊙¯|⍜⊢⍜°ℂ¯)                           # Do the flip in the found direction
+      )
+    ))
 
   # Draw
   ◡⊓(DrawPaddle|DrawBall|DrawBlocks)
