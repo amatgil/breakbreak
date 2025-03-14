@@ -41,9 +41,14 @@ I~Loop!(
   # Step physics
   ⊙(⍜⊣(↧ℂW H ↥ℂ0 0) \+)
 
-  # Flip ball vel if colliding with paddle
-  ⍥(⊙⍜⊢⍜°ℂ⊙¯) ◡(I~Collide~Rects⊓(˜⊂ ℂPaddleW PaddleH|˜⊂ℂ BallW BallH⊣))
+  # Flip ball y-vel if colliding with paddle or roof/floor
+  ⍥⊙(⍜⊢⍜°ℂ⊙¯) ◡(
+    ⊃(I~Collide~Rects ⊓(˜⊂ℂPaddleW PaddleH|˜⊂ℂ BallW BallH⊣)|∨⊃(≤0|≥H) ⊣◌°ℂ◌)
+    ∨)
+
+  # Flip ball x-vel if out of vertical bounds
+  ⍥⊙(⍜⊢⍜°ℂ¯) ◡⋅(∨⊃(≤0|≥W) ⊙◌°ℂ ⊣)
 
   # Draw
-  ◡⊓(DrawPaddle|DrawBall?|DrawBlocks)
+  ◡⊓(DrawPaddle|DrawBall|DrawBlocks)
 )
