@@ -10,15 +10,17 @@ Catppuccin ~ "./catppuccin.ua"
 └─╴
 
 # Constants
-H      ← 800
-W      ← 1000
-PadH   ← 30
-PadW   ← 200
-BallW  ← 10
-BallH  ← 10
-BlockH ← 20
-BlockW ← 65
-PadVel ← ×i 1/8
+H         ← 800
+W         ← 1000
+PadH      ← 30
+PadW      ← 200
+BallW     ← 10
+BallH     ← 10
+BlockH    ← 20
+BlockW    ← 65
+BlockPad  ← 20
+NumBlocks ← 10 # Per line
+PadVel    ← ×i 1/8
 BlockColors ← [Catppuccin~Green
                Catppuccin~Yellow
                Catppuccin~Rosewater
@@ -26,6 +28,7 @@ BlockColors ← [Catppuccin~Green
                Catppuccin~Teal]
 # Definitions
 ~Ball [Vel Pos]
+~Block {Color Size Pos}
 ~St {
   Pad ← ℂ÷₂W -×2.5PadH H
   Ball ← Ball ˙ℂ0.05 ÷₂ℂH W
@@ -39,11 +42,15 @@ BlockColors ← [Catppuccin~Green
 #               {Catppuccin~Yellow ℂ100 20 ℂ120 10}
 #               {Catppuccin~Rosewater ℂ100 20 ℂ300 10}
 #               {Catppuccin~Lavander ℂ100 20 ℂ500 10}]
+# ? Padding
 MakeLine ← (
-  10
-  ⇌⍢(⊂⊸(+ ×BlockW +0.4×0.8⚂⊢)|<W⊢) ⊸[∘]
+  ×W˜÷⊸⇡NumBlocks
   ▽⊸<W
-  ⧈({Catppuccin~Green ⊃(ℂBlockH -|˜ℂ 10)})
+  ⍜⇌(⊂W) ≡(+ ××BlockW0.7⚂) ⍜⊢(+BlockPad)
+  ⧈(?{Catppuccin~Green
+      ⊃(˜ℂBlockH -BlockPad -
+      | ˜ℂ 10
+      )})
 )
 
 StartBlocks ← |0 MakeLine
@@ -103,10 +110,10 @@ I~Loop!(
   #  ))
 
   # Draw
-  ?
   ⊸⊃(
     DrawPad St~Pad
   | DrawBall St~Ball
   | DrawBlocks St~Blocks
-  | DrawLives St~Lives)
+    # | DrawLives St~Lives
+  )
 )
