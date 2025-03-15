@@ -54,18 +54,18 @@ I~Loop!(
   ⍥(⋅StartState) Key~Down @R # Reset all keybind
 
   # Inputs
-  ⍥⍜St~Pad(↥ ℂ0 0 -PadVel) Key~Down Key~Arrow @<         # Move left, adjust to bounds
+  ⍥⍜St~Pad(↥ 0 -PadVel) Key~Down Key~Arrow @<            # Move left, adjust to bounds
   ⍥⍜St~Pad(↧ ℂ(-PadW W) H +PadVel) Key~Down Key~Arrow @> # Move right, adjust to bounds
 
   ⍣(⊸(°Status~Running St~Status)
-    ⍜(St~Ball|⍜⊣(↧ℂW H ↥ℂ0 0) \+) # Advance ball
+    ⍜(St~Ball|⍜⊣(↧ℂW H ↥0) \+) # Advance ball
 
     ⍥⍜(St~Ball|⍜⊢⍜°ℂ⊙¯) ⊸(∨⊃(≤0◌°ℂ⊣ St~Ball|IsPadBallCollision ⊃(St~Pad|St~Ball)))
-    ⍥⍜(St~Ball|⍜⊢⍜°ℂ¯) ⊸(∨⊃(≤0|≥W) ⊙◌°ℂ ⊣ St~Ball)
+    ⍥⍜(St~Ball|⍜⊢⍜°ℂ¯) ⊸(∨⊃(≤0|≥ -BallW W) ⊙◌°ℂ ⊣ St~Ball)
 
     ⊸(≥H◌°ℂ⊣ St~Ball)
     ⍥(⊸(=₀St~Lives)
-      ⨬(°⊸St~Ball ⍜⊢⋅(ℂ0 0) St~Ball StartState
+      ⨬(°⊸St~Ball ⍜⊢⋅0 St~Ball StartState
         °⊸St~Status Status~Intermission
       | °⊸St~Status Status~Lost)
     )
