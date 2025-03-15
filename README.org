@@ -4,3 +4,4 @@ A breakout clone, in uiua!
 ** TODO
 - Generate blocks
 - Find axis of collision with block
+- Take example image when finished
