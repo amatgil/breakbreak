@@ -5,25 +5,29 @@ Catppuccin ~ "./catppuccin.ua"
 ┌─╴Status
   |Running
   |Paused
-  |Intermission # When you just lost a ball but you have another
+  |Intermission # When you just lost a ball but you have another, that lil pause
   |Lost
 └─╴
 
 # Constants
-H           ← 800
-W           ← 1000
-PaddleH     ← 30
-PaddleW     ← 200
-BallW       ← 10
-BallH       ← 10
-MoveRate    ← 1/8
-BlockColors ← [Catppuccin~Green Catppuccin~Yellow Catppuccin~Rosewater Catppuccin~Lavander Catppuccin~Teal]
+H       ← 800
+W       ← 1000
+PaddleH ← 30
+PaddleW ← 200
+BallW   ← 10
+BallH   ← 10
+PadVel  ← ×i 1/8
+BlockColors ← [Catppuccin~Green
+               Catppuccin~Yellow
+               Catppuccin~Rosewater
+               Catppuccin~Lavander
+               Catppuccin~Teal]
 
 # Definitions
 ~Ball [Vel Pos]
 ~St {
   Paddle ← ℂ÷₂W -×2.5PaddleH H
-  Ball ← [˙ℂ0.05 ÷₂ℂH W]
+  Ball ← Ball ˙ℂ0.05 ÷₂ℂH W
   Blocks
   Lives ← 3
   Status ← Status~Running
@@ -43,29 +47,25 @@ DrawPaddle            ← I~Draw~Rect Catppuccin~Sapphire ℂPaddleW PaddleH    
 DrawBlocks            ← ≡(I~Draw~Rect °{⊙⊙⊙})                                  # ? Blocks
 DrawBall              ← I~Draw~Rect Catppuccin~Text ℂBallW BallH ⊣             # ? Ball
 DrawLives             ← I~Draw~Text Catppuccin~Text 20 ℂ10 40 ⊂"Lives: " °⋕    # ? Lives
-IsBallOutOfXBounds    ← ∨⊃(≤0|≥W) ⊙◌°ℂ ⊣                                       # ? Ball
-IsBallOutOfYBounds    ← ≤0 ◌°ℂ ⊣                                               # ? Ball
 IsPaddleBallCollision ← I~Collide~Rects ⊓(˜⊂ℂPaddleW PaddleH|˜⊂ℂ BallW BallH⊣) # ? PaddlePos Ball
 
 # Main
 I~Open [W H] "Breakbreak"
 
-StartState # Stack <- {PaddlePos Ball Blocks Lives Status}
+StartState # Stack <- State == {PaddlePos Ball Blocks Lives Status}
 I~Loop!(
   I~Draw~Background Catppuccin~Base
-  # Reset all
-  ⍥(⋅StartState) Key~Down @R
+  ⍥(⋅StartState) Key~Down @R # Reset all keybind
 
   # Inputs
-  ⍥⍜St~Paddle(↥ ℂ0 0 (-×MoveRate i)) Key~Down Key~Arrow @<            # Move left, adjust bounds
-  ⍥⍜St~Paddle(↧ ℂ(-PaddleW W) H (+×MoveRate i)) Key~Down Key~Arrow @> # Move right, adjust bounds
+  ⍥⍜St~Paddle(↥ ℂ0 0 -PadVel) Key~Down Key~Arrow @<            # Move left, adjust to bounds
+  ⍥⍜St~Paddle(↧ ℂ(-PaddleW W) H +PadVel) Key~Down Key~Arrow @> # Move right, adjust to bounds
 
   ⍣(⊸(°Status~Running St~Status)
-    # Step physics
-    ⍜(St~Ball|⍜⊣(↧ℂW H ↥ℂ0 0) \+)
+    ⍜(St~Ball|⍜⊣(↧ℂW H ↥ℂ0 0) \+) # Advance ball
 
-    ⍥⍜(St~Ball|⍜⊢⍜°ℂ⊙¯) ⊸(∨⊃(IsPaddleBallCollision⊃(St~Paddle|St~Ball)|IsBallOutOfYBounds St~Ball))
-    ⍥⍜(St~Ball|⍜⊢⍜°ℂ¯) ⊸(IsBallOutOfXBounds St~Ball)
+    ⍥⍜(St~Ball|⍜⊢⍜°ℂ⊙¯) ⊸(∨⊃(≤0◌°ℂ⊣ St~Ball|IsPaddleBallCollision ⊃(St~Paddle|St~Ball)))
+    ⍥⍜(St~Ball|⍜⊢⍜°ℂ¯) ⊸(∨⊃(≤0|≥W) ⊙◌°ℂ ⊣ St~Ball)
 
     ⊸(≥H◌°ℂ⊣ St~Ball)
     ⍥(⊸(=₀St~Lives)
