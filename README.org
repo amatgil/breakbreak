@@ -1,6 +1,23 @@
 * Breakbreak
 A breakout clone, in uiua!
 
+** Running
+*** Nix
+It's a flake that comes with everything (mainly =raylib= and =uiua=), so enable it.
+#+begin_src bash
+  git clone https://github.com/amatgil/breakbreak
+  cd breakbreak
+  direnv allow # Or 'nix flake develop'
+  uiua run
+#+end_src
+*** Not Nix
+Assuming you've got =raylib= and =uiua= installed.
+#+begin_src bash
+  git clone https://github.com/amatgil/breakbreak
+  cd breakbreak
+  uiua run
+#+end_src
+
 ** TODO
 - Generate blocks
 - Find axis of collision with block
