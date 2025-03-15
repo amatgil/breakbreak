@@ -16,6 +16,8 @@ PadH   ← 30
 PadW   ← 200
 BallW  ← 10
 BallH  ← 10
+BlockH ← 20
+BlockW ← 65
 PadVel ← ×i 1/8
 BlockColors ← [Catppuccin~Green
                Catppuccin~Yellow
@@ -33,10 +35,19 @@ BlockColors ← [Catppuccin~Green
 }
 
 # Helpers
-StartBlocks ← [{Catppuccin~Green ℂ100 20 ℂ10 10}
-               {Catppuccin~Yellow ℂ100 20 ℂ120 10}
-               {Catppuccin~Rosewater ℂ100 20 ℂ300 10}
-               {Catppuccin~Lavander ℂ100 20 ℂ500 10}]
+# StartBlocks ← [{Catppuccin~Green ℂ100 20 ℂ10 10}
+#               {Catppuccin~Yellow ℂ100 20 ℂ120 10}
+#               {Catppuccin~Rosewater ℂ100 20 ℂ300 10}
+#               {Catppuccin~Lavander ℂ100 20 ℂ500 10}]
+MakeLine ← (
+  10
+  ⇌⍢(⊂⊸(+ ×BlockW +0.4×0.8⚂⊢)|<W⊢) ⊸[∘]
+  ▽⊸<W
+  ⧈({Catppuccin~Green ⊃(ℂBlockH -|˜ℂ 10)})
+)
+
+StartBlocks ← |0 MakeLine
+
 StartState ← |0 St StartBlocks
 
 DrawPad            ← I~Draw~Rect Catppuccin~Sapphire ℂPadW PadH          # ? PadPos
