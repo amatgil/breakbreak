@@ -32,17 +32,6 @@ BlockColors ← [Catppuccin~Green
                Catppuccin~Lavander
                Catppuccin~Teal]
 
-# Definitions
-~Ball [Vel Pos]
-~Block {Color Size Pos}
-~St {
-  Pad ← ℂ÷₂W -×2.5PadH H
-  Ball ← Ball ˙ℂ0.5 ÷₂ℂH W
-  Blocks
-  Lives ← 3
-  Status ← Status~Running
-}
-
 # Helpers
 ┌─╴BlockInit
   PBlockW ← ÷NumBlocks -×₂MarginW W # PseudoWidth
@@ -54,10 +43,16 @@ BlockColors ← [Catppuccin~Green
   RandomCol ← (⊡⊸(⌊×⚂⧻)BlockColors)
   New       ← ≡(⊂□RandomCol ⊂ ℂBlockW BlockH) Positions
 └─╴
-StartBlocks ← BlockInit
-
-StartBlock ← ()
-StartState ← |0 St StartBlocks
+# Definitions
+~Ball [Vel Pos]
+~Block {Color Size Pos}
+~St {
+  Pad ← ℂ÷₂W -×2.5PadH H
+  Ball ← Ball ˙ℂ0.5 ÷₂ℂH W
+  Blocks ← BlockInit
+  Lives ← 3
+  Status ← Status~Running
+}
 
 DrawPad            ← I~Draw~Rect Catppuccin~Sapphire ℂPadW PadH          # ? PadPos
 DrawBlocks         ← ≡(I~Draw~Rect °{⊙⊙⊙})                               # ? Blocks
@@ -68,10 +63,10 @@ IsPadBallCollision ← I~Collide~Rects ⊓(˜⊂ℂPadW PadH|˜⊂ℂ BallW Ball
 # Main
 I~Open [W H] "Breakbreak"
 
-StartState # Stack <- State == {PadPos Ball Blocks Lives Status}
+St
 I~Loop!(
   I~Draw~Background Catppuccin~Base
-  ⍥(⋅StartState) Key~Down @R # Reset all keybind
+  ⍥(⋅St) Key~Down @R # Reset all keybind
 
   # Inputs
   ⍥⍜St~Pad(↥ 0 -PadVel) Key~Down Key~Arrow @<            # Move left, adjust to bounds
@@ -85,13 +80,13 @@ I~Loop!(
 
     ⊸(≥H◌°ℂ⊣ St~Ball)
     ⍥(⊸(=₀St~Lives)
-      ⨬(°⊸St~Ball ⍜⊢⋅0 St~Ball StartState
+      ⨬(°⊸St~Ball ⍜⊢⋅0 St~Ball St
         °⊸St~Status Status~Intermission
       | °⊸St~Status Status~Lost)
     )
   | ⊸(°Status~Intermission St~Status)
     I~Key~Down I~Key~Space
-    ⍥(°⊸St~Ball (St~Ball StartState)
+    ⍥(°⊸St~Ball (St~Ball St)
       °⊸St~Status Status~Running
       ⍜St~Lives-₁
     )
