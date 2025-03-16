@@ -1,7 +1,7 @@
 # Experimental!
 
 I ~ "git:https://github.com/Marcos-cat/iris" ~ Color Draw Key T
-Catppuccin ~ "./catppuccin.ua"
+Cat ~ "./catppuccin.ua"
 ┌─╴Status
   |Running
   |Paused
@@ -26,11 +26,11 @@ MarginH   ← 50
 MarginW   ← 30
 NumRows   ← 6 # How many lines
 PadVel    ← ×i 1/1
-BlockColors ← [Catppuccin~Green
-               Catppuccin~Yellow
-               Catppuccin~Rosewater
-               Catppuccin~Lavander
-               Catppuccin~Teal]
+BlockColors ← [Cat~Green
+               Cat~Yellow
+               Cat~Rosewater
+               Cat~Lavander
+               Cat~Teal]
 
 # Definitions
 ~Ball [Vel Pos]
@@ -55,19 +55,19 @@ BlockColors ← [Catppuccin~Green
   Status ← Status~Running
 }
 
-DrawPad            ← I~Draw~Rect Catppuccin~Sapphire ℂPadW PadH                           # ? PadPos
-DrawBlocks         ← ≡(I~Draw~Rect °{⊙⊙⊙})                                                # ? Blocks
-DrawBall           ← I~Draw~Rect Catppuccin~Text ℂBallW BallH ⊣                           # ? Ball
-DrawLives          ← I~Draw~Text Catppuccin~Text 20 ˙ℂ ÷₂MarginW ⊂"Lives: " °⋕            # ? Lives
-DrawScore          ← I~Draw~Text Catppuccin~Text 20 ˜ℂ ÷₂MarginW ⊸(-⊙W×20⧻) ⊂"Score: " °⋕ # ? Score
-IsPadBallCollision ← I~Collide~Rects ⊓(˜⊂ℂPadW PadH|˜⊂ℂ BallW BallH⊣)                     # ? PadPos Ball
+DrawPad            ← I~Draw~Rect Cat~Sapphire ℂPadW PadH                           # ? PadPos
+DrawBlocks         ← ≡(I~Draw~Rect °{⊙⊙⊙})                                         # ? Blocks
+DrawBall           ← I~Draw~Rect Cat~Text ℂBallW BallH ⊣                           # ? Ball
+DrawLives          ← I~Draw~Text Cat~Text 20 ˙ℂ ÷₂MarginW ⊂"Lives: " °⋕            # ? Lives
+DrawScore          ← I~Draw~Text Cat~Text 20 ˜ℂ ÷₂MarginW ⊸(-⊙W×20⧻) ⊂"Score: " °⋕ # ? Score
+IsPadBallCollision ← I~Collide~Rects ⊓(˜⊂ℂPadW PadH|˜⊂ℂ BallW BallH⊣)              # ? PadPos Ball
 
 # Main
 I~Open [W H] "Breakbreak"
 
 St
 I~Loop!(
-  I~Draw~Background Catppuccin~Base
+  I~Draw~Background Cat~Base
   ⍥⋅St Key~Down @R # Reset all keybind
 
   # Inputs
@@ -92,9 +92,9 @@ I~Loop!(
       °⊸St~Status Status~Running
       ⍜St~Lives-₁
     )
-    I~Draw~Text Catppuccin~Text 20 ℂ 10 -₂₀H "Press <SPC> to continue by using a life"
+    I~Draw~Text Cat~Text 20 ℂ 10 -₂₀H "Press <SPC> to continue by using a life"
   | ⊸(°Status~Lost St~Status)
-    I~Draw~Text Catppuccin~Text 20 ℂ30 -₂₀÷₂ H "You've lost, press R to reset"
+    I~Draw~Text Cat~Text 20 ℂ30 -₂₀÷₂ H "You've lost, press R to reset"
   )
 
   # Blocks
