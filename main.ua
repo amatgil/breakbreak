@@ -19,15 +19,13 @@ PadW ← 200
 BallW ← 10
 BallH ← 10
 
-BlockH   ← 20
-BlockW   ← 65
-BlockGap ← 10
-BlockPad ← 20
-MarginH  ← 10
-MarginW  ← 30
-
+BlockH ← 20
+# BlockW   ← 65
+NumBlocks ← 10
+BlockGap  ← 10
+MarginH   ← 50
+MarginW   ← 30
 BMaxVar   ← 50 # Maximum Variation of Block Width
-NumBlocks ← 10 # Per line
 NumRows   ← 6  # How many lines
 PadVel    ← ×i 1/1
 BlockColors ← [Catppuccin~Green
@@ -35,6 +33,7 @@ BlockColors ← [Catppuccin~Green
                Catppuccin~Rosewater
                Catppuccin~Lavander
                Catppuccin~Teal]
+
 # Definitions
 ~Ball [Vel Pos]
 ~Block {Color Size Pos}
@@ -47,26 +46,25 @@ BlockColors ← [Catppuccin~Green
 }
 
 # Helpers
+┌─╴BlockInit
+  PBlockW ← ÷NumBlocks -×₂MarginW W # PseudoWidth
+  BlockW  ← -BlockGap PBlockW
+  PBlockH ← +BlockH BlockGap # PseudoHeight
+  # NumBlocks ← ⌊÷PBlockW -×₂ MarginW W
 
+  Xs        ← +MarginW×PBlockW ⇡NumBlocks
+  Ys        ↚ ⍢(⊂++BlockH BlockGap⊸⊢|<NumRows⧻) [MarginH]
+  Positions ↚ ♭⊞ℂ Xs Ys
+  New       ← ≡(⊂□⊡⊸(⌊×⚂⧻)BlockColors ⊂ ℂBlockW BlockH) Positions
+└─╴
+StartBlocks ← BlockInit
 # StartBlocks ← [{Catppuccin~Green ℂ100 20 ℂ10 10}
 #               {Catppuccin~Yellow ℂ100 20 ℂ120 10}
 #               {Catppuccin~Rosewater ℂ100 20 ℂ300 10}
 #               {Catppuccin~Lavander ℂ100 20 ℂ500 10}]
 
-# ?
-BlockXPositions ← ↧W↥0 ≡(+×BMaxVar-0.5⚂) ×(-MarginW W) ÷⟜⇡ # XPositions ? NumBlocks
-BlockPositions  ← ≡ℂ BlockXPositions                       # Positions ? NumBlocks YPos
-BlockDimensions ← ≡˜ℂ BlockH⊂⊃⊢⧈- BlockXPositions          # Dimensions ? NumBlocks
-
-# ? NumRows
-StartBlocks ← (
-  +MarginH ×(+BlockGap BlockH)⇡
-  ♭₋₁≡(≡⊂⊃(BlockDimensions|BlockPositions) NumBlocks)
-  ≡(⊂ □Catppuccin~Green)
-  # ⊂≡⊃(BlockDimensions NumBlocks|BlockPositions NumBlocks)
-)
-
-StartState ← |0 St StartBlocks 4
+StartBlock ← ()
+StartState ← |0 St StartBlocks
 
 DrawPad            ← I~Draw~Rect Catppuccin~Sapphire ℂPadW PadH          # ? PadPos
 DrawBlocks         ← ≡(I~Draw~Rect °{⊙⊙⊙})                               # ? Blocks
