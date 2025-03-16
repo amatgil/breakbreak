@@ -47,18 +47,20 @@ BlockColors ← [Catppuccin~Green
 └─╴
 
 ~St {
-  Pad ← ℂ÷₂W -×2.5PadH H
-  Ball ← Ball ˙ℂ0.5 ÷₂ℂH W
+  Pad ← ℂ÷₂-PadW W -×2.5PadH H
+  Ball ← Ball ˙ℂ0.5 ℂ÷₈W ÷₃H
   Blocks ← BlockInit
   Lives ← 3
+  Score ← 100
   Status ← Status~Running
 }
 
-DrawPad            ← I~Draw~Rect Catppuccin~Sapphire ℂPadW PadH          # ? PadPos
-DrawBlocks         ← ≡(I~Draw~Rect °{⊙⊙⊙})                               # ? Blocks
-DrawBall           ← I~Draw~Rect Catppuccin~Text ℂBallW BallH ⊣          # ? Ball
-DrawLives          ← I~Draw~Text Catppuccin~Text 20 ℂ10 40 ⊂"Lives: " °⋕ # ? Lives
-IsPadBallCollision ← I~Collide~Rects ⊓(˜⊂ℂPadW PadH|˜⊂ℂ BallW BallH⊣)    # ? PadPos Ball
+DrawPad            ← I~Draw~Rect Catppuccin~Sapphire ℂPadW PadH                           # ? PadPos
+DrawBlocks         ← ≡(I~Draw~Rect °{⊙⊙⊙})                                                # ? Blocks
+DrawBall           ← I~Draw~Rect Catppuccin~Text ℂBallW BallH ⊣                           # ? Ball
+DrawLives          ← I~Draw~Text Catppuccin~Text 20 ˙ℂ ÷₂MarginW ⊂"Lives: " °⋕            # ? Lives
+DrawScore          ← I~Draw~Text Catppuccin~Text 20 ˜ℂ ÷₂MarginW ⊸(-⊙W×20⧻) ⊂"Score: " °⋕ # ? Score
+IsPadBallCollision ← I~Collide~Rects ⊓(˜⊂ℂPadW PadH|˜⊂ℂ BallW BallH⊣)                     # ? PadPos Ball
 
 # Main
 I~Open [W H] "Breakbreak"
@@ -66,7 +68,7 @@ I~Open [W H] "Breakbreak"
 St
 I~Loop!(
   I~Draw~Background Catppuccin~Base
-  ⍥(⋅St) Key~Down @R # Reset all keybind
+  ⍥⋅St Key~Down @R # Reset all keybind
 
   # Inputs
   ⍥⍜St~Pad(↥ 0 -PadVel) Key~Down Key~Arrow @<            # Move left, adjust to bounds
@@ -111,6 +113,7 @@ I~Loop!(
     DrawPad St~Pad
   | DrawBall St~Ball
   | DrawBlocks St~Blocks
-    # | DrawLives St~Lives
+  | DrawLives St~Lives
+  | DrawScore St~Score
   )
 )
