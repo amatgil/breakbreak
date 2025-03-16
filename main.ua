@@ -19,14 +19,12 @@ PadW ← 200
 BallW ← 10
 BallH ← 10
 
-BlockH ← 20
-# BlockW   ← 65
+BlockH    ← 20
 NumBlocks ← 10
 BlockGap  ← 10
 MarginH   ← 50
 MarginW   ← 30
-BMaxVar   ← 50 # Maximum Variation of Block Width
-NumRows   ← 6  # How many lines
+NumRows   ← 6 # How many lines
 PadVel    ← ×i 1/1
 BlockColors ← [Catppuccin~Green
                Catppuccin~Yellow
@@ -49,19 +47,14 @@ BlockColors ← [Catppuccin~Green
 ┌─╴BlockInit
   PBlockW ← ÷NumBlocks -×₂MarginW W # PseudoWidth
   BlockW  ← -BlockGap PBlockW
-  PBlockH ← +BlockH BlockGap # PseudoHeight
-  # NumBlocks ← ⌊÷PBlockW -×₂ MarginW W
 
   Xs        ← +MarginW×PBlockW ⇡NumBlocks
   Ys        ↚ ⍢(⊂++BlockH BlockGap⊸⊢|<NumRows⧻) [MarginH]
   Positions ↚ ♭⊞ℂ Xs Ys
-  New       ← ≡(⊂□⊡⊸(⌊×⚂⧻)BlockColors ⊂ ℂBlockW BlockH) Positions
+  RandomCol ← (⊡⊸(⌊×⚂⧻)BlockColors)
+  New       ← ≡(⊂□RandomCol ⊂ ℂBlockW BlockH) Positions
 └─╴
 StartBlocks ← BlockInit
-# StartBlocks ← [{Catppuccin~Green ℂ100 20 ℂ10 10}
-#               {Catppuccin~Yellow ℂ100 20 ℂ120 10}
-#               {Catppuccin~Rosewater ℂ100 20 ℂ300 10}
-#               {Catppuccin~Lavander ℂ100 20 ℂ500 10}]
 
 StartBlock ← ()
 StartState ← |0 St StartBlocks
