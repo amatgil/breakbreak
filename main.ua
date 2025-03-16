@@ -32,7 +32,9 @@ BlockColors ← [Catppuccin~Green
                Catppuccin~Lavander
                Catppuccin~Teal]
 
-# Helpers
+# Definitions
+~Ball [Vel Pos]
+~Block {Color Size Pos}
 ┌─╴BlockInit
   PBlockW ← ÷NumBlocks -×₂MarginW W # PseudoWidth
   BlockW  ← -BlockGap PBlockW
@@ -41,11 +43,9 @@ BlockColors ← [Catppuccin~Green
   Ys        ↚ ⍢(⊂++BlockH BlockGap⊸⊢|<NumRows⧻) [MarginH]
   Positions ↚ ♭⊞ℂ Xs Ys
   RandomCol ← (⊡⊸(⌊×⚂⧻)BlockColors)
-  New       ← ≡(⊂□RandomCol ⊂ ℂBlockW BlockH) Positions
+  New       ← ≡(Block RandomCol ℂBlockW BlockH) Positions
 └─╴
-# Definitions
-~Ball [Vel Pos]
-~Block {Color Size Pos}
+
 ~St {
   Pad ← ℂ÷₂W -×2.5PadH H
   Ball ← Ball ˙ℂ0.5 ÷₂ℂH W
