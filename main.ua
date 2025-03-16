@@ -80,12 +80,15 @@ I~Loop!(
     ⍥⍜(St~Ball|⍜⊢⍜°ℂ⊙¯) ⊸(∨⊃(≤0◌°ℂ⊣ St~Ball|IsPadBallCollision ⊃(St~Pad|St~Ball)))
     ⍥⍜(St~Ball|⍜⊢⍜°ℂ¯) ⊸(∨⊃(≤0|≥ -BallW W) ⊙◌°ℂ ⊣ St~Ball)
 
-    ⊸(≥H◌°ℂ⊣ St~Ball)
-    ⍥(⊸(=₀St~Lives)
+    ⊸(≥H◌°ℂ⊣ St~Ball) # If ball has exited below
+    ⍥(⊸(=₀St~Lives)   # Change state depending on if ≍0 lives 
       ⨬(°⊸St~Ball ⍜⊢⋅0 St~Ball St
         °⊸St~Status Status~Intermission
       | °⊸St~Status Status~Lost)
     )
+
+    # Collision with block
+    # TODO(cas)
   | ⊸(°Status~Intermission St~Status)
     I~Key~Down I~Key~Space
     ⍥(°⊸St~Ball (St~Ball St)
