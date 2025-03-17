@@ -105,9 +105,8 @@ I~Loop!(
       | °⊸St~Status Status~Lost)
     )
 
-    # Collision with block
-    ⊸(RunCollisionUpdate ⊃(St~Ball|St~Blocks|St~Score))
-    °⊸St~Ball ⊙°⊸St~Blocks ⊙⊙°⊸St~Score
+    # <Collision with block>
+    °⊸St~Ball ⊙°⊸St~Blocks ⊙⊙°⊸St~Score ⊸(RunCollisionUpdate ⊃(St~Ball|St~Blocks|St~Score))
   | ⊸(°Status~Intermission St~Status)
     I~Key~Down I~Key~Space
     ⍥(°⊸St~Ball (St~Ball St)
