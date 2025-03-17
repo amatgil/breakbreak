@@ -56,26 +56,18 @@ BlockColors ← [Cat~Green
   Status ← Status~Running
 }
 
-DrawPad              ← |1.0 I~Draw~Rect Cat~Sapphire ℂPadW PadH                            # ? PadPos
-DrawBlocks           ← |1.0 ≡(I~Draw~Rect °{⊙⊙⊙})                                          # ? Blocks
-DrawBall             ← |1.0 I~Draw~Rect Cat~Text ℂBallW BallH ⊣                            # ? Ball
-DrawLives            ← |1.0 I~Draw~Text Cat~Text 20 ˙ℂ ÷₂MarginW ⊂"Lives: " °⋕             # ? Lives
-DrawScore            ← |1.0 I~Draw~Text Cat~Text 20 ˜ℂ ÷₂MarginW ⊸(-⊙W×20⧻) ⊂"Score: " °⋕  # ? Score
-IsPadBallCollision   ← |2 I~Collide~Rects ⊓(˜⊂ℂPadW PadH|˜⊂ℂ BallW BallH⊣)                 # ? PadPos Ball
-IsBallBlockCollision ← |2 I~Collide~Rects ⊓(⊂⊃(Block~Pos|Block~Size)|⊂Ball~Pos ˙ℂBallSize) # b ? Block Ball 
+DrawPad            ← |1.0 I~Draw~Rect Cat~Sapphire ℂPadW PadH                           # ? PadPos
+DrawBlocks         ← |1.0 ≡(I~Draw~Rect °{⊙⊙⊙})                                         # ? Blocks
+DrawBall           ← |1.0 I~Draw~Rect Cat~Text ℂBallW BallH ⊣                           # ? Ball
+DrawLives          ← |1.0 I~Draw~Text Cat~Text 20 ˙ℂ ÷₂MarginW ⊂"Lives: " °⋕            # ? Lives
+DrawScore          ← |1.0 I~Draw~Text Cat~Text 20 ˜ℂ ÷₂MarginW ⊸(-⊙W×20⧻) ⊂"Score: " °⋕ # ? Score
+IsPadBallCollision ← |2 I~Collide~Rects ⊓(˜⊂ℂPadW PadH|˜⊂ℂ BallW BallH⊣)                # ? PadPos Ball
+# IsBallBlockCollision ← |2 I~Collide~Rects ⊓(⊂⊃(Block~Pos|Block~Size)|⊂Ball~Pos ˙ℂBallSize) # <No X Y> ? Block Ball
 
 # Ball Blocks Score ? Ball Blocks Score
 RunCollisionUpdate ← |3.3 (
-  ⊙⊙[]: # blocks ball blockacc score
-  # ball blockacc score ? block ball blockacc score
-  ∧(◡IsBallBlockCollision
-    ⨬(𝄐⌞⊂ # no collision, block to blockacc
-    | 𝄐⌞⊂⊙⊙⊙∘
-      # 0   # Find axis of collision
-      # ⨬(⊓(◌|⍜(⊢Ball~Vel|¯)|∘|+₁)
-      # | ⊓(◌|⍜(⊣Ball~Vel|¯)|∘|+₁))
-    )
-  )
+  ⊙⊙∘
+  # ◡≡IsBallBlockCollision ¤
 )
 
 # Main
