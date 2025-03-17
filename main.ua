@@ -33,6 +33,9 @@ BlockColors ← [Cat~Green
                Cat~Lavander
                Cat~Teal]
 
+Cj  ← ⍜°ℂ¯  # z'? z
+RCj ← ⍜°ℂ⊙¯ # z'? z
+
 # Definitions
 ~Ball [Vel Pos]
 ~Block {Color Size Pos}
@@ -62,6 +65,18 @@ DrawBall           ← |1.0 I~Draw~Rect Cat~Text ℂBallW BallH ⊣             
 DrawLives          ← |1.0 I~Draw~Text Cat~Text 20 ˙ℂ ÷₂MarginW ⊂"Lives: " °⋕            # ? Lives
 DrawScore          ← |1.0 I~Draw~Text Cat~Text 20 ˜ℂ ÷₂MarginW ⊸(-⊙W×20⧻) ⊂"Score: " °⋕ # ? Score
 IsPadBallCollision ← |2 I~Collide~Rects ⊓(˜⊂ℂPadW PadH|˜⊂ℂ BallW BallH⊣)                # ? PadPos Ball
+SetBallVel ← |1 (
+  # State' ? State
+  IsPadBallCollision⊸⊃(St~Pad|St~Ball)
+  ⍥(
+    ⊸(◿₂/+)?[∩(Key~Down Key~Arrow) @> @<]
+    ⨬(◌
+    | : # State Pressed
+      ⍜St~Ball(⍜(Ball~Vel|˜⍥Cj ⊙(°¤⊚)))
+    )
+    ?
+  )
+)
 # IsBallBlockCollision ← |2 I~Collide~Rects ⊓(⊂⊃(Block~Pos|Block~Size)|⊂Ball~Pos ˙ℂBallSize) # <No X Y> ? Block Ball
 
 # Ball Blocks Score ? Ball Blocks Score
@@ -85,8 +100,10 @@ I~Loop!(
   ⍣(⊸(°Status~Running St~Status)
     ⍜(St~Ball|⍜⊣(↧ℂW H ↥0) \+) # Advance ball
 
-    ⍥⍜(St~Ball|⍜⊢⍜°ℂ⊙¯) ⊸(∨⊃(≤0◌°ℂ⊣ St~Ball|IsPadBallCollision ⊃(St~Pad|St~Ball)))
-    ⍥⍜(St~Ball|⍜⊢⍜°ℂ¯) ⊸(∨⊃(≤0|≥ -BallW W) ⊙◌°ℂ ⊣ St~Ball)
+    ⍥⍜St~Ball(⍜⊢⍜°ℂ⊙¯) ⊸(∨⊃(≤0◌°ℂ⊣ St~Ball|IsPadBallCollision ⊃(St~Pad|St~Ball)))
+    ⍥⍜St~Ball(⍜⊢⍜°ℂ¯) ⊸(∨⊃(≤0|≥ -BallW W) ⊙◌°ℂ ⊣ St~Ball)
+
+    SetBallVel # If ball-paddle collision, update velocity depending on its movement
 
     ⊸(≥H◌°ℂ⊣ St~Ball) # If ball has exited below
     ⍥(⊸(=₀St~Lives)   # Change state depending on if ≍0 lives 
@@ -97,9 +114,7 @@ I~Loop!(
 
     # Collision with block
     ⊸(RunCollisionUpdate ⊃(St~Ball|St~Blocks|St~Score))
-    ⊙⊙°⊸St~Score
-    ⊙°⊸St~Blocks
-    °⊸St~Ball
+    °⊸St~Ball ⊙°⊸St~Blocks ⊙⊙°⊸St~Score
   | ⊸(°Status~Intermission St~Status)
     I~Key~Down I~Key~Space
     ⍥(°⊸St~Ball (St~Ball St)
